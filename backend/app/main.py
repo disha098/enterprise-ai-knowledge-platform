@@ -1,16 +1,17 @@
 from fastapi import FastAPI
 
+from app.core.config import settings
+
 app = FastAPI(
-    title="Enterprise AI Knowledge Platform API",
-    description="Backend API for the Enterprise AI Knowledge Platform",
-    version="0.1.0",
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
 )
 
 
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to the Enterprise AI Knowledge Platform API"
+        "message": f"Welcome to {settings.APP_NAME}"
     }
 
 
@@ -18,5 +19,5 @@ def root():
 def health_check():
     return {
         "status": "healthy",
-        "version": "0.1.0"
+        "version": settings.APP_VERSION,
     }
