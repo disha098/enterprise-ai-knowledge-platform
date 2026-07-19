@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     APP_VERSION: str
     DEBUG: bool
 
+    DATABASE_URL: str
+    DIRECT_URL: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
