@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from sqlalchemy import text
 
 from app.core.config import settings
+from app.database.database import engine
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -21,3 +23,23 @@ def health_check():
         "status": "healthy",
         "version": settings.APP_VERSION,
     }
+
+
+@app.get("/db-test")
+def db_test():
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(text("SELECT 1"))
+            value = result.scalar()
+
+        return {
+            "status": "success",
+            "database": "Connected",
+            "result": value
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
