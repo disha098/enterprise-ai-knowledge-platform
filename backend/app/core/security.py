@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -60,3 +61,9 @@ def create_access_token(
         settings.SECRET_KEY,
         algorithm=ALGORITHM,
     )
+
+def create_refresh_token() -> str:
+    """
+    Generate a cryptographically secure refresh token.
+    """
+    return secrets.token_urlsafe(64)
