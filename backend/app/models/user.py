@@ -2,6 +2,8 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
+
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -17,4 +19,14 @@ class User(Base):
         "RefreshToken",
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+
+    role_id: Mapped[int | None] = mapped_column(
+        ForeignKey("roles.id"),
+        nullable=True,
+    )
+
+    role = relationship(
+        "Role",
+        back_populates="users",
     )
