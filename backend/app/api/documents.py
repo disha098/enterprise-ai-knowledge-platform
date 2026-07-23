@@ -1,4 +1,8 @@
 from pathlib import Path
+from app.api.dependencies import get_current_user
+
+from fastapi import HTTPException
+from fastapi.responses import FileResponse
 
 from fastapi import (
     APIRouter,
@@ -16,6 +20,8 @@ from app.services.document_service import save_uploaded_file
 from app.crud.document import (
     create_document,
     get_all_documents,
+    get_document_by_id,
+    delete_document,
 )
 
 from app.schemas.document import (
@@ -69,4 +75,70 @@ def upload_document(
     return {
         "message": "Document uploaded successfully.",
         "document": document,
+    }
+
+
+@router.get("/{document_id}/download")
+def download_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    document = get_document_by_id(
+        db,
+        document_id,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    file_path = Path(document.file_path)
+
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="File not found on disk.",
+        )
+
+    return FileResponse(
+        path=file_path,
+        filename=document.filename,
+        media_type="application/octet-stream",
+    )
+
+
+@router.delete("/{document_id}")
+def delete_uploaded_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles(["Admin", "Editor"])
+    ),
+):
+    document = get_document_by_id(
+        db,
+        document_id,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    file_path = Path(document.file_path)
+
+    if file_path.exists():
+        file_path.unlink()
+
+    delete_document(
+        db,
+        document,
+    )
+
+    return {
+        "message": "Document deleted successfully.",
     }
