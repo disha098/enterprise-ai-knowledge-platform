@@ -30,3 +30,9 @@ class User(Base):
         "Role",
         back_populates="users",
     )
+
+    documents = relationship(
+        "Document",
+        back_populates="uploader",
+        cascade="all, delete-orphan",
+    )

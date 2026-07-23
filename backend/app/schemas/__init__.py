@@ -1,5 +1,3 @@
-from app.schemas.refresh_token import RefreshTokenRequest
-
 from app.schemas.user import (
     UserBase,
     UserCreate,
@@ -15,4 +13,10 @@ from app.schemas.token import (
 from app.schemas.refresh_token import (
     RefreshTokenRequest,
     LogoutRequest,
+)
+
+from app.schemas.document import (
+    DocumentResponse,
+    DocumentListResponse,
+    DocumentUploadResponse,
 )
