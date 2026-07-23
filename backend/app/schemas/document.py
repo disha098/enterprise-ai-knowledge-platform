@@ -19,7 +19,20 @@ class DocumentResponse(BaseModel):
 class DocumentListResponse(BaseModel):
     documents: list[DocumentResponse]
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class DocumentUploadResponse(BaseModel):
     message: str
     document: DocumentResponse
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DocumentHistoryResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    documents: list[DocumentResponse]
+
+    model_config = ConfigDict(from_attributes=True)

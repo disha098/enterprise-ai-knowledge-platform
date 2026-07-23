@@ -32,6 +32,26 @@ def get_all_documents(db: Session) -> list[Document]:
     )
 
 
+def get_document_history(
+    db: Session,
+    skip: int = 0,
+    limit: int = 20,
+) -> list[Document]:
+    return (
+        db.query(Document)
+        .order_by(Document.uploaded_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_document_count(
+    db: Session,
+) -> int:
+    return db.query(Document).count()
+
+
 def delete_document(
     db: Session,
     document: Document,

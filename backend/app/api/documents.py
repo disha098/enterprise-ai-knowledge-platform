@@ -22,12 +22,16 @@ from app.crud.document import (
     get_all_documents,
     get_document_by_id,
     delete_document,
+    get_document_history,
+    get_document_count,
 )
 
 from app.schemas.document import (
     DocumentUploadResponse,
     DocumentListResponse,
+    DocumentHistoryResponse,
 )
+
 
 router = APIRouter(
     prefix="/documents",
@@ -45,6 +49,43 @@ def list_documents(
     documents = get_all_documents(db)
 
     return {
+        "documents": documents,
+    }
+
+
+@router.get(
+    "/history",
+    response_model=DocumentHistoryResponse,
+)
+def document_history(
+    page: int = 1,
+    page_size: int = 20,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if page < 1:
+        page = 1
+
+    if page_size < 1:
+        page_size = 20
+
+    if page_size > 100:
+        page_size = 100
+
+    skip = (page - 1) * page_size
+
+    documents = get_document_history(
+        db=db,
+        skip=skip,
+        limit=page_size,
+    )
+
+    total = get_document_count(db)
+
+    return {
+        "total": total,
+        "page": page,
+        "page_size": page_size,
         "documents": documents,
     }
 

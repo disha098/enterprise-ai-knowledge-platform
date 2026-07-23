@@ -19,4 +19,5 @@ from app.schemas.document import (
     DocumentResponse,
     DocumentListResponse,
     DocumentUploadResponse,
+    DocumentHistoryResponse,
 )
