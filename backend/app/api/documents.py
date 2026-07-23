@@ -9,11 +9,19 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 from app.core.permissions import require_roles
-from app.crud.document import create_document
 from app.database.session import get_db
 from app.models.user import User
-from app.schemas.document import DocumentUploadResponse
 from app.services.document_service import save_uploaded_file
+
+from app.crud.document import (
+    create_document,
+    get_all_documents,
+)
+
+from app.schemas.document import (
+    DocumentUploadResponse,
+    DocumentListResponse,
+)
 
 router = APIRouter(
     prefix="/documents",
@@ -21,10 +29,17 @@ router = APIRouter(
 )
 
 
-@router.get("/")
-def list_documents():
+@router.get(
+    "/",
+    response_model=DocumentListResponse,
+)
+def list_documents(
+    db: Session = Depends(get_db),
+):
+    documents = get_all_documents(db)
+
     return {
-        "message": "Documents API is working!"
+        "documents": documents,
     }
 
 
@@ -39,7 +54,7 @@ def upload_document(
         require_roles(["Admin", "Editor"])
     ),
 ):
-    file_path, stored_filename = save_uploaded_file(file)
+    file_path, stored_filename, file_size = save_uploaded_file(file)
 
     document = create_document(
         db=db,
@@ -47,7 +62,7 @@ def upload_document(
         stored_filename=stored_filename,
         file_path=file_path,
         file_type=Path(file.filename).suffix.lower(),
-        file_size=file.size or 0,
+        file_size=file_size,
         uploaded_by=current_user.id,
     )
 

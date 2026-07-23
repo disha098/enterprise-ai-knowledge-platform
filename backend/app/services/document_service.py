@@ -6,7 +6,7 @@ from fastapi import HTTPException, UploadFile
 from app.core.config import settings
 
 
-def save_uploaded_file(file: UploadFile) -> tuple[str, str]:
+def save_uploaded_file(file: UploadFile) -> tuple[str, str, int]:
     extension = Path(file.filename).suffix.lower()
 
     if extension not in settings.ALLOWED_FILE_TYPES:
@@ -36,4 +36,4 @@ def save_uploaded_file(file: UploadFile) -> tuple[str, str]:
 
     file.file.seek(0)
 
-    return str(file_path), stored_filename
+    return str(file_path), stored_filename, file_size

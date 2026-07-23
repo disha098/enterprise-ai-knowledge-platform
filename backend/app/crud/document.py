@@ -13,7 +13,10 @@ def create_document(db: Session, **kwargs) -> Document:
     return document
 
 
-def get_document_by_id(db: Session, document_id: int) -> Document | None:
+def get_document_by_id(
+    db: Session,
+    document_id: int,
+) -> Document | None:
     return (
         db.query(Document)
         .filter(Document.id == document_id)
@@ -29,6 +32,9 @@ def get_all_documents(db: Session) -> list[Document]:
     )
 
 
-def delete_document(db: Session, document: Document) -> None:
+def delete_document(
+    db: Session,
+    document: Document,
+) -> None:
     db.delete(document)
     db.commit()
