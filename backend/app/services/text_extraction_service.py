@@ -40,7 +40,15 @@ def extract_docx_text(file_path: str) -> str:
 
 
 def extract_txt_text(file_path: str) -> str:
-    raise NotImplementedError
+    """
+    Extract text from a TXT file.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            return file.read().strip()
+    except UnicodeDecodeError:
+        with open(file_path, "r", encoding="latin-1") as file:
+            return file.read().strip()
 
 
 def extract_text(file_path: str) -> str:
