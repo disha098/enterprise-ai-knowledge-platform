@@ -23,7 +23,20 @@ def extract_pdf_text(file_path: str) -> str:
 
 
 def extract_docx_text(file_path: str) -> str:
-    raise NotImplementedError
+    """
+    Extract text from a DOCX file.
+    """
+    document = Document(file_path)
+
+    paragraphs = []
+
+    for paragraph in document.paragraphs:
+        text = paragraph.text.strip()
+
+        if text:
+            paragraphs.append(text)
+
+    return "\n".join(paragraphs)
 
 
 def extract_txt_text(file_path: str) -> str:
