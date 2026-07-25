@@ -1,7 +1,16 @@
-from app.services.embedding_service import embeddings
+from app.services.embedding_service import embedding_service
 
-print("Loading embedding model...")
+documents = [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Natural Language Processing",
+    "Retrieval Augmented Generation"
+]
 
-print(type(embeddings))
+embeddings = embedding_service.embed_documents(documents)
 
-print("Embedding model loaded successfully!")
+print(f"Number of embeddings: {len(embeddings)}")
+print(f"Embedding dimension: {len(embeddings[0])}")
+
+print("\nFirst 5 values of first embedding:")
+print(embeddings[0][:5])
