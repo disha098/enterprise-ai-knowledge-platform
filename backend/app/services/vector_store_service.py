@@ -64,4 +64,14 @@ class VectorStoreService:
         return results
 
 
+    def delete_vectors(self, ids: list[str]):
+        """
+        Delete vectors from ChromaDB by their IDs.
+        """
+
+        self.collection.delete(ids=ids)
+
+        print(f"Deleted {len(ids)} vectors.")
+
+
 vector_store = VectorStoreService()
