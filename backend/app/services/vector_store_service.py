@@ -74,4 +74,37 @@ class VectorStoreService:
         print(f"Deleted {len(ids)} vectors.")
 
 
+    def update_chunks(self, chunks):
+        """
+        Update existing vectors in ChromaDB.
+        """
+
+        ids = []
+        documents = []
+        embeddings = []
+        metadatas = []
+
+        for chunk in chunks:
+            ids.append(str(chunk["chunk_id"]))
+            documents.append(chunk["text"])
+            embeddings.append(chunk["embedding"])
+
+            metadata = {
+                key: value
+                for key, value in chunk.items()
+                if key not in ["text", "embedding"]
+            }
+
+            metadatas.append(metadata)
+
+        self.collection.update(
+            ids=ids,
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
+
+        print(f"Updated {len(ids)} vectors.")
+
+
 vector_store = VectorStoreService()
