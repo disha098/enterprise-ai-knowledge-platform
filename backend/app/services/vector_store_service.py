@@ -49,4 +49,19 @@ class VectorStoreService:
         print(f"Stored {len(ids)} chunks in ChromaDB.")
 
 
+    def similarity_search(self, query: str, embedding_service, top_k: int = 3):
+        """
+        Search for the most relevant chunks.
+        """
+
+        query_embedding = embedding_service.embed_text(query)
+
+        results = self.collection.query(
+            query_embeddings=[query_embedding],
+            n_results=top_k,
+        )
+
+        return results
+
+
 vector_store = VectorStoreService()
