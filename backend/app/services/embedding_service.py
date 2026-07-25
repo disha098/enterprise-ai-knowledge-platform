@@ -22,5 +22,18 @@ class EmbeddingService:
         """
         return self.embeddings.embed_documents(documents)
 
+    def create_chunk_embeddings(self, chunks: list[dict]):
+        """
+        Generate embeddings for document chunks.
+        """
+        texts = [chunk["text"] for chunk in chunks]
+
+        vectors = self.embeddings.embed_documents(texts)
+
+        for chunk, vector in zip(chunks, vectors):
+            chunk["embedding"] = vector
+
+        return chunks
+
 
 embedding_service = EmbeddingService()

@@ -1,16 +1,26 @@
 from app.services.embedding_service import embedding_service
 
-documents = [
-    "Artificial Intelligence",
-    "Machine Learning",
-    "Natural Language Processing",
-    "Retrieval Augmented Generation"
+chunks = [
+    {
+        "chunk_id": 1,
+        "text": "Artificial Intelligence is changing enterprise software."
+    },
+    {
+        "chunk_id": 2,
+        "text": "Retrieval Augmented Generation improves LLM accuracy."
+    },
+    {
+        "chunk_id": 3,
+        "text": "ChromaDB stores vector embeddings efficiently."
+    }
 ]
 
-embeddings = embedding_service.embed_documents(documents)
+result = embedding_service.create_chunk_embeddings(chunks)
 
-print(f"Number of embeddings: {len(embeddings)}")
-print(f"Embedding dimension: {len(embeddings[0])}")
+print(f"Generated embeddings for {len(result)} chunks.\n")
 
-print("\nFirst 5 values of first embedding:")
-print(embeddings[0][:5])
+for chunk in result:
+    print(f"Chunk ID: {chunk['chunk_id']}")
+    print(f"Vector length: {len(chunk['embedding'])}")
+    print(f"First 5 values: {chunk['embedding'][:5]}")
+    print("-" * 50)
