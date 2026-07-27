@@ -1,20 +1,17 @@
 class ContextBuilderService:
     """
-    Builds a context string from retrieved chunks.
+    Builds context from retrieved chunks.
     """
 
-    def build_context(self, retrieval_results):
-        documents = retrieval_results["documents"][0]
-        ids = retrieval_results["ids"][0]
+    def build_context(self, retrieved_chunks):
+        context = []
 
-        context_parts = []
-
-        for doc_id, document in zip(ids, documents):
-            context_parts.append(
-                f"[Chunk {doc_id}]\n{document}"
+        for chunk in retrieved_chunks:
+            context.append(
+                f"[Chunk {chunk['chunk_id']}]\n{chunk['text']}"
             )
 
-        return "\n\n".join(context_parts)
+        return "\n\n".join(context)
 
 
 context_builder_service = ContextBuilderService()

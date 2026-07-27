@@ -1,17 +1,13 @@
 class CitationService:
     """
-    Generates citations from retrieval results.
+    Generates citations from retrieved chunks.
     """
 
-    def generate_citations(self, retrieval_results):
-        ids = retrieval_results["ids"][0]
-
-        citations = []
-
-        for chunk_id in ids:
-            citations.append(f"Chunk {chunk_id}")
-
-        return citations
+    def generate_citations(self, retrieved_chunks):
+        return [
+            f"Chunk {chunk['chunk_id']}"
+            for chunk in retrieved_chunks
+        ]
 
 
 citation_service = CitationService()
