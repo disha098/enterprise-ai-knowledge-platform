@@ -7,11 +7,12 @@ class RetrieverService:
     Handles semantic retrieval from the vector database.
     """
 
-    def retrieve(self, query: str, top_k: int = 3):
+    def retrieve(self, query: str, top_k: int = 3, where: dict | None = None,):
         results = vector_store.similarity_search(
             query=query,
             embedding_service=embedding_service,
             top_k=top_k,
+            where = where,
         )
 
         retrieved_chunks = []
@@ -26,6 +27,8 @@ class RetrieverService:
             chunk = {
                 "chunk_id": chunk_id,
                 "text": document,
+                "document_name": "enterprise_ai.pdf",
+                "category": "AI"
             }
 
             if index < len(distances):
