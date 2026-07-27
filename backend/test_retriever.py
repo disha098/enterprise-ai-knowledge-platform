@@ -1,18 +1,17 @@
 from app.services.retriever_service import retriever_service
 
-query = "Explain Retrieval Augmented Generation"
-
 results = retriever_service.retrieve(
-    query=query,
-    top_k=3
+    query="Explain Retrieval Augmented Generation",
+    top_k=2
 )
 
-documents = results["documents"][0]
-ids = results["ids"][0]
+print(f"Retrieved {len(results)} chunks\n")
 
-print("\nRetrieved Documents:\n")
+for chunk in results:
+    print(f"Chunk ID : {chunk['chunk_id']}")
+    print(f"Text     : {chunk['text']}")
 
-for doc_id, document in zip(ids, documents):
-    print(f"ID: {doc_id}")
-    print(document)
+    if "distance" in chunk:
+        print(f"Distance : {chunk['distance']}")
+
     print("-" * 50)

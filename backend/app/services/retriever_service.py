@@ -14,7 +14,26 @@ class RetrieverService:
             top_k=top_k,
         )
 
-        return results
+        retrieved_chunks = []
+
+        ids = results["ids"][0]
+        documents = results["documents"][0]
+
+        # Chroma may not always return distances depending on configuration
+        distances = results.get("distances", [[]])[0]
+
+        for index, (chunk_id, document) in enumerate(zip(ids, documents)):
+            chunk = {
+                "chunk_id": chunk_id,
+                "text": document,
+            }
+
+            if index < len(distances):
+                chunk["distance"] = distances[index]
+
+            retrieved_chunks.append(chunk)
+
+        return retrieved_chunks
 
 
 retriever_service = RetrieverService()
