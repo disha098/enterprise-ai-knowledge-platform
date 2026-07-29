@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class ChatRequest(BaseModel):
-    question: str
+    query: str
+    conversation_id: int | None = None
 
 
 class SourceDocument(BaseModel):
@@ -13,5 +14,6 @@ class SourceDocument(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    conversation_id: int
     answer: str
     sources: list[SourceDocument]
