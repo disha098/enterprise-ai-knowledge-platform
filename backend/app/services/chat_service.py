@@ -1,5 +1,6 @@
 from app.services.gemini_service import gemini_service
 from app.services.retriever_service import retriever_service
+from app.utils.token_manager import build_context
 
 
 class ChatService:
@@ -9,9 +10,10 @@ class ChatService:
             top_k=3,
         )
 
-        context = "\n\n".join(
-            chunk["text"] for chunk in retrieved_chunks
-        )
+        context = build_context(retrieved_chunks)
+        print("=" * 50)
+        print(f"Context Length: {len(context)} characters")
+        print("=" * 50)
 
         prompt = f"""
 You are an Enterprise AI Assistant.
