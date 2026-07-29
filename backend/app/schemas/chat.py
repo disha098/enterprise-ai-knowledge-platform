@@ -6,7 +6,7 @@ class ChatRequest(BaseModel):
 
 
 class SourceDocument(BaseModel):
-    document_id: str
+    document_id: int
     filename: str
     page: int | None = None
     content: str

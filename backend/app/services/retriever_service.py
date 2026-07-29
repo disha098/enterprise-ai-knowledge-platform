@@ -19,16 +19,23 @@ class RetrieverService:
 
         ids = results["ids"][0]
         documents = results["documents"][0]
+        metadatas = results["metadatas"][0]
 
         # Chroma may not always return distances depending on configuration
         distances = results.get("distances", [[]])[0]
 
         for index, (chunk_id, document) in enumerate(zip(ids, documents)):
+
+            metadata = metadatas[index]
+            print(metadata)
             chunk = {
                 "chunk_id": chunk_id,
                 "text": document,
-                "document_name": "enterprise_ai.pdf",
-                "category": "AI"
+                "document_id": metadata.get("document_id", 0),
+                "filename": metadata.get("filename", "Unknown"),
+                "page": metadata.get("page"),
+                "category": metadata.get("category", ""),
+                "chunk_index": metadata.get("chunk_index", 0),
             }
 
             if index < len(distances):

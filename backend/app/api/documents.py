@@ -15,7 +15,10 @@ from sqlalchemy.orm import Session
 from app.core.permissions import require_roles
 from app.database.session import get_db
 from app.models.user import User
+
 from app.services.document_service import save_uploaded_file
+from app.services.document_ingestion_service import document_ingestion_service
+import fitz  # PyMuPDF
 
 from app.crud.document import (
     create_document,
@@ -111,6 +114,30 @@ def upload_document(
         file_type=Path(file.filename).suffix.lower(),
         file_size=file_size,
         uploaded_by=current_user.id,
+    )
+
+    # -----------------------------
+    # Extract text from uploaded PDF
+    # -----------------------------
+    pdf = fitz.open(file_path)
+
+    text = ""
+
+    for page in pdf:
+        text += page.get_text()
+
+    pdf.close()
+
+    # -----------------------------
+    # Store chunks in ChromaDB
+    # -----------------------------
+    document_ingestion_service.ingest(
+        text=text,
+        metadata={
+            "document_id": document.id,
+            "filename": document.filename,
+            "uploaded_by": current_user.id,
+        },
     )
 
     return {
