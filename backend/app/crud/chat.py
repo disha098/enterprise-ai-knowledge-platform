@@ -95,3 +95,26 @@ def get_chat_history(
         conversation.messages,
         key=lambda message: message.created_at,
     )
+
+
+def delete_conversation(
+    db: Session,
+    conversation_id: int,
+    user_id: int,
+):
+    conversation = (
+        db.query(Conversation)
+        .filter(
+            Conversation.id == conversation_id,
+            Conversation.user_id == user_id,
+        )
+        .first()
+    )
+
+    if conversation is None:
+        return False
+
+    db.delete(conversation)
+    db.commit()
+
+    return True

@@ -20,6 +20,7 @@ from app.crud.chat import (
     save_message,
     get_conversations,
     get_conversation,
+    delete_conversation,
 )
 
 router = APIRouter(
@@ -137,3 +138,28 @@ def conversation_details(
         )
 
     return conversation
+
+
+@router.delete(
+    "/conversations/{conversation_id}",
+)
+def delete_chat_conversation(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    deleted = delete_conversation(
+        db=db,
+        conversation_id=conversation_id,
+        user_id=current_user.id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found",
+        )
+
+    return {
+        "message": "Conversation deleted successfully."
+    }
