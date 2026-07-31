@@ -3,6 +3,7 @@ from datetime import datetime, UTC
 
 from app.models.conversation import Conversation
 from app.models.chat_message import ChatMessage
+from sqlalchemy.orm import joinedload
 
 
 def create_conversation(
@@ -42,3 +43,31 @@ def save_message(
     db.refresh(chat_message)
 
     return chat_message
+
+
+def get_conversations(
+    db: Session,
+    user_id: int,
+):
+    return (
+        db.query(Conversation)
+        .filter(Conversation.user_id == user_id)
+        .order_by(Conversation.created_at.desc())
+        .all()
+    )
+
+
+def get_conversation(
+    db: Session,
+    conversation_id: int,
+    user_id: int,
+):
+    return (
+        db.query(Conversation)
+        .options(joinedload(Conversation.messages))
+        .filter(
+            Conversation.id == conversation_id,
+            Conversation.user_id == user_id,
+        )
+        .first()
+    )

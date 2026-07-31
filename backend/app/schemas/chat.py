@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class ChatRequest(BaseModel):
@@ -17,3 +18,33 @@ class ChatResponse(BaseModel):
     conversation_id: int
     answer: str
     sources: list[SourceDocument]
+
+
+class ConversationSummary(BaseModel):
+    id: int
+    title: str
+    created_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class ChatMessageResponse(BaseModel):
+    role: str
+    message: str
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class ConversationResponse(BaseModel):
+    id: int
+    title: str
+    created_at: datetime
+    messages: list[ChatMessageResponse]
+
+    model_config = {
+        "from_attributes": True
+    }

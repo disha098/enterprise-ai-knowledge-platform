@@ -11,6 +11,12 @@ from app.models.user import User
 from app.crud.chat import (
     create_conversation,
     save_message,
+    get_conversations,
+    get_conversation,
+)
+from app.schemas.chat import (
+    ConversationSummary,
+    ConversationResponse,
 )
 
 router = APIRouter(
@@ -68,3 +74,41 @@ def chat(
             status_code=500,
             detail=str(e),
         )
+
+
+@router.get(
+    "/conversations",
+    response_model=list[ConversationSummary],
+)
+def list_conversations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_conversations(
+        db=db,
+        user_id=current_user.id,
+    )
+
+
+@router.get(
+    "/conversations/{conversation_id}",
+    response_model=ConversationResponse,
+)
+def conversation_details(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    conversation = get_conversation(
+        db=db,
+        conversation_id=conversation_id,
+        user_id=current_user.id,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found",
+        )
+
+    return conversation
