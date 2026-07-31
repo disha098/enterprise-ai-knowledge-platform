@@ -1,7 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 
-from app.schemas.chat import ChatRequest, ChatResponse
+from app.schemas.chat import (
+    ChatRequest,
+    ChatResponse,
+    ConversationSummary,
+    ConversationResponse,
+)
+
 from app.services.chat_service import chat_service
 
 from app.database.session import get_db
@@ -10,13 +16,10 @@ from app.models.user import User
 
 from app.crud.chat import (
     create_conversation,
+    get_chat_history,
     save_message,
     get_conversations,
     get_conversation,
-)
-from app.schemas.chat import (
-    ConversationSummary,
-    ConversationResponse,
 )
 
 router = APIRouter(
@@ -33,6 +36,7 @@ def chat(
 ):
     try:
 
+        # Create conversation if it doesn't exist
         if request.conversation_id is None:
 
             conversation = create_conversation(
@@ -44,9 +48,9 @@ def chat(
             conversation_id = conversation.id
 
         else:
-
             conversation_id = request.conversation_id
 
+        # Save current user message first
         save_message(
             db=db,
             conversation_id=conversation_id,
@@ -54,8 +58,29 @@ def chat(
             message=request.query,
         )
 
-        result = chat_service.chat(request.query)
+        # Load conversation history
+        history = get_chat_history(
+            db=db,
+            conversation_id=conversation_id,
+            user_id=current_user.id,
+        )
 
+        # Remove the current user message from history
+        # to avoid sending it twice to the LLM.
+        if (
+            history
+            and history[-1].role == "user"
+            and history[-1].message == request.query
+        ):
+            history = history[:-1]
+
+        # Generate AI response
+        result = chat_service.chat(
+            question=request.query,
+            history=history,
+        )
+
+        # Save assistant response
         save_message(
             db=db,
             conversation_id=conversation_id,

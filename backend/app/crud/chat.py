@@ -71,3 +71,27 @@ def get_conversation(
         )
         .first()
     )
+
+
+def get_chat_history(
+    db: Session,
+    conversation_id: int,
+    user_id: int,
+):
+    conversation = (
+        db.query(Conversation)
+        .options(joinedload(Conversation.messages))
+        .filter(
+            Conversation.id == conversation_id,
+            Conversation.user_id == user_id,
+        )
+        .first()
+    )
+
+    if conversation is None:
+        return []
+
+    return sorted(
+        conversation.messages,
+        key=lambda message: message.created_at,
+    )
