@@ -6,7 +6,7 @@ from app.schemas.refresh_token import (
     LogoutRequest,
 )
 
-from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.login import LoginRequest
 
 from app.crud.refresh_token import (
     create_refresh_token as save_refresh_token,
@@ -35,7 +35,7 @@ from app.schemas.user import (
     UserResponse,
 )
 
-from app.schemas.token import Token
+from app.schemas.token import (Token, LoginResponse)
 
 router = APIRouter(
     prefix="/auth",
@@ -65,16 +65,16 @@ def register_user(
 
 @router.post(
     "/login",
-    response_model=Token,
+    response_model=LoginResponse,
 )
 def login_user(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    request: LoginRequest,
     db: Session = Depends(get_db),
 ):
     user = authenticate_user(
         db,
-        form_data.username,
-        form_data.password,
+        request.email,
+        request.password,
     )
 
     if not user:
@@ -111,6 +111,11 @@ def login_user(
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "full_name": user.full_name,
+            "email": user.email,
+        },
     }
 
 
