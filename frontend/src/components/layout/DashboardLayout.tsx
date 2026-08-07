@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+
+import Sidebar from "../dashboard/Sidebar";
+import Topbar from "../dashboard/Topbar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -12,11 +13,13 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-slate-100">
 
+      {/* Sidebar */}
       <Sidebar />
 
+      {/* Main Content */}
       <div className="flex flex-1 flex-col">
 
-        <Header />
+        <Topbar />
 
         <main className="flex-1 p-8">
           {children}

@@ -5,6 +5,10 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import ForgotPassword from "../pages/ForgotPassword";
 
+import Documents from "../pages/Documents";
+import UploadDocument from "../pages/UploadDocument";
+import DocumentDetails from "../pages/DocumentDetails";
+
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 export default function AppRoutes() {
@@ -28,6 +32,21 @@ export default function AppRoutes() {
             <Dashboard />
           </ProtectedRoute>
         }
+      />
+
+      <Route
+          path="/documents"
+          element={<Documents />}
+      />
+
+      <Route
+          path="/documents/upload"
+          element={<UploadDocument />}
+      />
+
+      <Route
+          path="/documents/:id"
+          element={<DocumentDetails />}
       />
     </Routes>
   );
