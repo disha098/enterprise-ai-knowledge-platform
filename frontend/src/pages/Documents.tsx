@@ -5,7 +5,29 @@ import { Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Documents() {
-  const documents: any[] = [];
+  const documents = [
+      {
+        id: 1,
+        name: "Synopsis 020726 rev03.docx",
+        size: "0.03 MB",
+        created_at: "Aug 8, 2026",
+        status: "Ready" as const,
+      },
+      {
+        id: 2,
+        name: "Enterprise AI Project Report.pdf",
+        size: "2.4 MB",
+        created_at: "Aug 7, 2026",
+        status: "Processing" as const,
+      },
+      {
+        id: 3,
+        name: "Knowledge Base Notes.txt",
+        size: "0.12 MB",
+        created_at: "Aug 6, 2026",
+        status: "Ready" as const,
+      },
+    ];
 
   return (
     <DashboardLayout>
