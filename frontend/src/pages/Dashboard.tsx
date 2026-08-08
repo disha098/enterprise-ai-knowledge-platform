@@ -10,6 +10,9 @@ import StatCard from "../components/dashboard/StatCard";
 import RecentActivity from "../components/dashboard/RecentActivity";
 import EmptyState from "../components/dashboard/EmptyState";
 
+import QuickActions from "../components/dashboard/QuickActions";
+import SystemStatus from "../components/dashboard/SystemStatus";
+
 export default function Dashboard() {
   return (
     <DashboardLayout>
@@ -55,6 +58,11 @@ export default function Dashboard() {
         <RecentActivity />
 
         <EmptyState />
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <QuickActions />
+          <SystemStatus />
+        </div>
 
       </div>
 
