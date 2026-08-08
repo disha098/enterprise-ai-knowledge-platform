@@ -8,6 +8,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import Documents from "../pages/Documents";
 import UploadDocument from "../pages/UploadDocument";
 import DocumentDetails from "../pages/DocumentDetails";
+import Chat from "../pages/Chat";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
@@ -47,6 +48,15 @@ export default function AppRoutes() {
       <Route
           path="/documents/:id"
           element={<DocumentDetails />}
+      />
+
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        }
       />
     </Routes>
   );
